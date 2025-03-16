@@ -16,24 +16,22 @@ class MyNotificationListener : NotificationListenerService() {
         Log.d(TAG, "Notification Listener Connected")
     }
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-
-        // Extract notification details
         val packageName = sbn.packageName
-        val tickerText = sbn.notification.tickerText?.toString()
         val extras = sbn.notification.extras
         val title = extras.getString("android.title") ?: "No Title"
         val text = extras.getString("android.text") ?: "No Text"
 
-        Log.d(TAG, "Title: $title, Text: $text, Ticker: $tickerText")
+        Log.d(TAG, "Title: $title, Text: $text, From: $packageName")
 
-        // Send broadcast with notification data
+        // Send broadcast with notification data to YOUR app
         val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
-            putExtra("com.example.justsoyouknow.TITLE", title)
-            putExtra("com.example.justsoyouknow.TEXT", text)
-            putExtra("com.example.justsoyouknow.PACKAGE_NAME", packageName)
-            setPackage(packageName)
+            putExtra("packageName", packageName)
+            putExtra("title", title)
+            putExtra("text", text)
+            setPackage(applicationContext.packageName) // ✅ Ensures it's sent within your app
         }
-        sendBroadcast(intent)
+
+        sendBroadcast(intent) // ✅ Send broadcast to registered receivers in your app
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {

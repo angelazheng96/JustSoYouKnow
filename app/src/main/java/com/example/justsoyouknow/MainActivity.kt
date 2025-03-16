@@ -45,6 +45,7 @@ fun isNotificationAccessEnabled(context: Context): Boolean {
     return !TextUtils.isEmpty(enabledListeners) && enabledListeners.contains(context.packageName)
 }
 
+
 class MainActivity : ComponentActivity() {
     private lateinit var notificationReceiver: BroadcastReceiver
 
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
         // Register BroadcastReceiver
         notificationReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-
+                Log.d("eohwdkfsl","difhasdhlfj")
                 if (intent?.action == MyNotificationListener.ACTION_NOTIFICATION_RECEIVED) {
                     val title = intent.getStringExtra("title") ?: "No Title"
                     val text = intent.getStringExtra("text") ?: "No Text"
@@ -85,6 +86,7 @@ class MainActivity : ComponentActivity() {
                     notificationTitle = title
                     notificationText = text
 
+                    //Create Notif
                     writeCustomNotification(applicationContext, title, text)
                 }
             }
@@ -118,7 +120,6 @@ class MainActivity : ComponentActivity() {
         ensureNotificationAccess(this)
     }
 }
-
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
@@ -165,6 +166,7 @@ fun createNotification(context: Context, title: String, message: String) {
 }
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
+    Log.d("D", "LAJSHJ")
     if( title != "No Notification" && !title.startsWith("JUST RECEIVED A NOTIFICATION") && title.isNotEmpty()){
         createNotification(context, "JUST RECEIVED A NOTIFICATION - $title", "TEXT - $text")
     }
@@ -173,7 +175,7 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
 
 @Composable
 fun MyButton(context: Context) {
-    Button(onClick = { createNotification(context, "JUST RECEIVED A NOTIFICATION", "You just pressed a button!") }) {
+    Button(onClick = { createNotification(context, "OG notification", "You just pressed a button!") }) {
         Text(text = "Click Me")
     }
 }
