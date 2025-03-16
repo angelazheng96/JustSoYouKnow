@@ -192,11 +192,11 @@ class MainActivity : ComponentActivity() {
                 Log.d("RandomTask", "Task executed at: ${System.currentTimeMillis()}")
 
                 // Schedule the next execution with a random delay
-                val randomDelay = (0..3000).random() // Random delay up to 60 sec
+                val randomDelay = (0..18000).random() // Random delay up to 60 sec
                 handler.postDelayed(this, randomDelay.toLong())
             }
         }
-        handler.postDelayed(runnable, (0..3000).random().toLong())
+        handler.postDelayed(runnable, (0..18000).random().toLong())
 
         // Register BroadcastReceiver
         notificationReceiver = object : BroadcastReceiver() {
