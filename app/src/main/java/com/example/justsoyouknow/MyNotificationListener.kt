@@ -28,9 +28,10 @@ class MyNotificationListener : NotificationListenerService() {
 
         // Send broadcast with notification data
         val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
-            putExtra("title", title)
-            putExtra("text", text)
-            putExtra("package", packageName)
+            putExtra("com.example.justsoyouknow.TITLE", title)
+            putExtra("com.example.justsoyouknow.TEXT", text)
+            putExtra("com.example.justsoyouknow.PACKAGE_NAME", packageName)
+            setPackage(packageName)
         }
         sendBroadcast(intent)
     }

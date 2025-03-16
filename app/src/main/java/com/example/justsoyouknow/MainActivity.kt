@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
         // Register BroadcastReceiver
         notificationReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+
                 if (intent?.action == MyNotificationListener.ACTION_NOTIFICATION_RECEIVED) {
                     val title = intent.getStringExtra("title") ?: "No Title"
                     val text = intent.getStringExtra("text") ?: "No Text"
