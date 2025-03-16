@@ -38,6 +38,13 @@ import android.os.Handler
 import android.os.Looper
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+object GlobalSwitchState {
+    var isEnabled by mutableStateOf(true)
+}
 
 fun isReceiveNotificationAccessEnabled(context: Context): Boolean {
     // Get the list of enabled notification listener services
@@ -186,6 +193,7 @@ class MainActivity : ComponentActivity() {
                         MyButton(applicationContext)
                         ReceiveSetting(applicationContext)
                         SendSetting(applicationContext)
+                        Spacer(modifier = Modifier.height(16.dp))
                         OffSwitch()
                     }
                 }
@@ -233,7 +241,7 @@ fun createNotification(context: Context, title: String, message: String) {
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
     Log.d("D", "MOST UPDATED VERSION")
-    if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty()){
+    if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled){
         createNotification(context, "Just So You Know...", "you just got a new notification! :)")
     }
 }
@@ -248,40 +256,57 @@ fun MyButton(context: Context) {
 
 @Composable
 fun OffSwitch() {
-    var isEnabled by remember { mutableStateOf(false) } // State variable for the switch
-    var switchCounter = 0
-    var denialComments = arrayOf(
-        "are you sure about that?",
-        "hmmm...",
-        "umm... I don't think so.",
-        "that was a misclick, right?",
+    var switchCounter by remember { mutableStateOf(0) }
+    var isEnabled by remember { mutableStateOf(true) }
+    var denialMessage by remember { mutableStateOf("Notifications ON") }
+    val coroutineScope = rememberCoroutineScope()
+
+    val denialComments = listOf(
+        "Are you sure about that?",
+        "Hmmm...",
+        "Umm... I don't think so.",
+        "That was a misclick, right?",
         "I know you didn't mean that -u-",
-        "why would you do that?",
-        "whoops - correcter ur mistake :)",
-        "should u really be doing that?",
+        "Why would you do that?",
+        "Whoops - corrected your mistake :)",
+        "Should you really be doing that?",
         "I don't think you want to do that :]",
-        """Sorry dave, I can't do that.""",
+        """Sorry Dave, I can't do that.""",
         "[Sorry, request failed :p]",
-        "hahaha, funny prank!",
-        "no <3",
+        "Hahaha, funny prank!",
+        "No <3",
         "Request Denied :D"
     )
-    val denialText = if (switchCounter > 0) denialComments.random() else "Notifications ON"
 
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = denialText)
+        Text(text = denialMessage) // Displays the current message
 
         Switch(
-            checked = true, // Always stays ON
+            checked = isEnabled,
             onCheckedChange = {
-                switchCounter++ // Count failed attempts
-                if (switchCounter >= 7) {
+                if (switchCounter in 0..5) {
+                    switchCounter++
                     isEnabled = false
-                    switchCounter = 0
 
+                    // Briefly turn it on, then off after 1 second
+                    coroutineScope.launch {
+                        delay(500)
+                        isEnabled = true
+                        denialMessage = denialComments.random()
+                    }
+                } else if (switchCounter == -1) {
+                    isEnabled = it
+                    denialMessage = "Notifications ON"
+                    switchCounter = 0
+                    GlobalSwitchState.isEnabled = true
+                } else {
+                    isEnabled = false
+                    denialMessage = "Fine. You win."
+                    switchCounter = -1
+                    GlobalSwitchState.isEnabled = false
                 }
             }
         )
