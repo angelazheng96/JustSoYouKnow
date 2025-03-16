@@ -11,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.justsoyouknow.ui.theme.JustSoYouKnowTheme
 import android.app.AlertDialog
 import android.content.Context
@@ -110,7 +109,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun receiveSetting(context: Context) {
+    fun ReceiveSetting(context: Context) {
         Button(onClick = { ensureReceiveNotificationAccess(this) }) {
             if (isReceiveNotificationAccessEnabled(context)) {
                 Text(text = "Receive Notification Access Enabled")
@@ -121,7 +120,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun sendSetting(context: Context) {
+    fun SendSetting(context: Context) {
         Button(onClick = { ensureSendNotificationAccess(this) }) {
             if (isSendNotificationAccessEnabled(context)) {
                 Log.d("tagging", "no change button")
@@ -180,11 +179,11 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Greeting(name = "Android")
+                        Greeting(name = "User")
                         Spacer(modifier = Modifier.height(16.dp))
                         MyButton(applicationContext)
-                        receiveSetting(applicationContext)
-                        sendSetting(applicationContext)
+                        ReceiveSetting(applicationContext)
+                        SendSetting(applicationContext)
                     }
                 }
             }
@@ -199,14 +198,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         text = "Hello $name!",
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JustSoYouKnowTheme {
-        Greeting("Android")
-    }
 }
 
 fun createNotification(context: Context, title: String, message: String) {
