@@ -28,6 +28,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.NotificationCompat
 
 fun isReceiveNotificationAccessEnabled(context: Context): Boolean {
@@ -100,7 +102,13 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun receiveSetting(context: Context) {
-        Button(onClick = { ensureReceiveNotificationAccess(this) }) {
+        Button(
+            onClick = { ensureReceiveNotificationAccess(this) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isReceiveNotificationAccessEnabled(context)) Color.Gray else Color.Red,
+                contentColor = Color.White // Text color
+            )
+        ) {
             if (isReceiveNotificationAccessEnabled(context)) {
                 Text(text = "Receive Notification Access Enabled")
             } else {
@@ -111,12 +119,16 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun sendSetting(context: Context) {
-        Button(onClick = { ensureSendNotificationAccess(this) }) {
+        Button(
+            onClick = { ensureSendNotificationAccess(this) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSendNotificationAccessEnabled(context)) Color.Gray else Color.Red,
+                contentColor = Color.White // Text color
+            )
+        ) {
             if (isSendNotificationAccessEnabled(context)) {
-                Log.d("tagging", "no change button")
                 Text(text = "Send Notification Access Enabled")
             } else {
-                Log.d("tagging", "change button")
                 Text(text = "Enable Send Notification Access")
             }
         }
@@ -139,8 +151,8 @@ class MainActivity : ComponentActivity() {
                         Greeting(name = "Android")
                         Spacer(modifier = Modifier.height(16.dp))
                         MyButton(applicationContext)
-                        receiveSetting(applicationContext)
                         sendSetting(applicationContext)
+                        receiveSetting(applicationContext)
                     }
                 }
             }
