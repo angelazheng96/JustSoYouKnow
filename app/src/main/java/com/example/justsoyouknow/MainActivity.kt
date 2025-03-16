@@ -76,6 +76,7 @@ fun isSendNotificationAccessEnabled(context: Context): Boolean {
 class MainActivity : ComponentActivity() {
     private lateinit var notificationReceiver: BroadcastReceiver
 
+    // Ensure that permission to receive notifications is enabled
     private fun ensureReceiveNotificationAccess(context: Context) {
         // Check if the notification access permission is enabled
         if (!isReceiveNotificationAccessEnabled(context)) {
@@ -92,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 .show()
 
         } else {
+            // If already enabled, show a success dialog
             AlertDialog.Builder(context)
                 .setTitle("You're all good!")
                 .setMessage("You've already allowed JustSoYouKnow to access all your other lovely notifications.")
@@ -100,7 +102,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Ensure that permission to send notifications is enabled
     fun ensureSendNotificationAccess(context: Context) {
+
+        // Check if the notification access permission is enabled
         if (!isSendNotificationAccessEnabled(context)) {
             // Show a dialog prompting the user to enable the required setting
             AlertDialog.Builder(context)
@@ -117,6 +122,7 @@ class MainActivity : ComponentActivity() {
                 .show()
 
         } else {
+            // If already enabled, show a success dialog
             AlertDialog.Builder(context)
                 .setTitle("You're all good!")
                 .setMessage("You've already allowed JustSoYouKnow to send you friendly notifications.")
@@ -125,7 +131,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
+    // Create button to enable permission to receive notifications
     @Composable
     fun ReceiveSetting(context: Context) {
         var buttonColor by remember { mutableStateOf(Color.Red) }
@@ -149,7 +155,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
+    // Create button to enable permission to send notifications
     @Composable
     fun SendSetting(context: Context) {
         var buttonColor by remember { mutableStateOf(Color.Red) }
@@ -173,6 +179,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Run every time a new instance of the app is opened for the first time
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,7 +187,7 @@ class MainActivity : ComponentActivity() {
         var notificationTitle by mutableStateOf("No Notification")
         var notificationText by mutableStateOf("")
 
-        //Random timer
+        // Random timer that sends notifications about the time
         val handler = Handler(Looper.getMainLooper())
         val context: Context = this
         val runnable = object : Runnable {
@@ -246,6 +253,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Greeting message at top of main page
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
@@ -254,6 +262,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }
 
+// Creates notification to let user know about new notification
 fun createNotification(context: Context, title: String, message: String) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -282,6 +291,7 @@ fun createNotification(context: Context, title: String, message: String) {
     notificationManager.notify(1, notification) // 1 is the notification ID
 }
 
+// Generate text for new notification
 fun writeCustomNotification(context: Context, title: String, text: String) {
     val wordArray = arrayOf(
         "you just got a new notification! :)",
@@ -298,10 +308,13 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
         "you                                                                                          looked haha",
         "CONGRATULATIONS!!                                              you got a notification! :D"
     )
-    if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled){
-        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()])    }
+
+    if (title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled) {
+        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()])
+    }
 }
 
+// Off switch to turn off notifications
 @Composable
 fun OffSwitch() {
     var switchCounter by remember { mutableStateOf(0) }

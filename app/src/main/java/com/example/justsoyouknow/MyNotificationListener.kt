@@ -15,6 +15,7 @@ class MyNotificationListener : NotificationListenerService() {
         super.onListenerConnected()
     }
 
+    // Broadcast new notification
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val packageName = sbn.packageName
         val extras = sbn.notification.extras
@@ -26,10 +27,10 @@ class MyNotificationListener : NotificationListenerService() {
             putExtra("packageName", packageName)
             putExtra("title", title)
             putExtra("text", text)
-            setPackage(applicationContext.packageName) // ✅ Ensures it's sent within app
+            setPackage(applicationContext.packageName) // Ensure it's sent within app
         }
 
-        sendBroadcast(intent) // ✅ Send broadcast to registered receivers in app
+        sendBroadcast(intent) // Send broadcast to registered receivers in app
     }
 
 }
