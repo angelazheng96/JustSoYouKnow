@@ -4,7 +4,8 @@ import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-
+import android.os.Handler
+import android.os.Looper
 class MyNotificationListener : NotificationListenerService() {
 
     companion object {
@@ -23,15 +24,17 @@ class MyNotificationListener : NotificationListenerService() {
 
         Log.d(TAG, "Title: $title, Text: $text, From: $packageName")
 
-        // Send broadcast with notification data to YOUR app
-        val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
-            putExtra("packageName", packageName)
-            putExtra("title", title)
-            putExtra("text", text)
-            setPackage(applicationContext.packageName) // ✅ Ensures it's sent within your app
-        }
-
-        sendBroadcast(intent) // ✅ Send broadcast to registered receivers in your app
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
+                putExtra("packageName", packageName)
+                putExtra("title", title)
+                putExtra("text", text)
+                setPackage(applicationContext.packageName) // Ensures broadcast stays in your app
+            }
+            sendBroadcast(intent) // Delayed broadcast
+            Log.d(TAG, "Broadcast sent after delay")
+        }, 1000) // Delay of 2000ms (2 seconds)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
