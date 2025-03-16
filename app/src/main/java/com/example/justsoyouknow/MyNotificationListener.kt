@@ -14,7 +14,6 @@ class MyNotificationListener : NotificationListenerService() {
         Log.d(TAG, "Notification Listener Connected")
     }
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        Log.d(TAG, "Notification received from: ${sbn.packageName}")
 
         // Extract notification details
         val packageName = sbn.packageName
