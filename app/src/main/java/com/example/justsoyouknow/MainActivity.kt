@@ -41,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -194,7 +195,7 @@ class MainActivity : ComponentActivity() {
             override fun run() {
                 // Your task here
                 val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
-                createNotification(context, "Just So You Know...", "it's "+ time+" right now!", 2)
+                createNotification(context, "Just So You Know...", "it's "+ time+" right now!", 2, android.R.drawable.ic_lock_idle_alarm)
 
                 // Schedule the next execution with a random delay
                 val randomDelay = (0..18000).random() // Random delay up to 60 sec
@@ -263,7 +264,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 // Creates notification to let user know about new notification
-fun createNotification(context: Context, title: String, message: String, id: Int) {
+fun createNotification(context: Context, title: String, message: String, id: Int, notifIcon: Int) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     // For Android 8.0 (API level 26) and above, a notification channel is required.
@@ -283,7 +284,9 @@ fun createNotification(context: Context, title: String, message: String, id: Int
     val notification = NotificationCompat.Builder(context, "default_channel")
         .setContentTitle(title)
         .setContentText(message)
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setSmallIcon(notifIcon)
+        .setColorized(true)
+        .setColor(Color.Red.toArgb())
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .build()
 
@@ -310,7 +313,7 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
     )
 
     if (title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled) {
-        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()], 1)
+        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()], 1, android.R.drawable.ic_dialog_alert)
     }
 }
 
