@@ -194,7 +194,7 @@ class MainActivity : ComponentActivity() {
             override fun run() {
                 // Your task here
                 val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
-                createNotification(context, "Just So You Know...", "it's "+ time+" right now!")
+                createNotification(context, "Just So You Know...", "it's "+ time+" right now!", 2)
 
                 // Schedule the next execution with a random delay
                 val randomDelay = (0..18000).random() // Random delay up to 60 sec
@@ -263,7 +263,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 // Creates notification to let user know about new notification
-fun createNotification(context: Context, title: String, message: String) {
+fun createNotification(context: Context, title: String, message: String, id: Int) {
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     // For Android 8.0 (API level 26) and above, a notification channel is required.
@@ -288,7 +288,7 @@ fun createNotification(context: Context, title: String, message: String) {
         .build()
 
     // Show the notification
-    notificationManager.notify(1, notification) // 1 is the notification ID
+    notificationManager.notify(id, notification) // 1 is the notification ID
 }
 
 // Generate text for new notification
@@ -310,7 +310,7 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
     )
 
     if (title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled) {
-        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()])
+        createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()], 1)
     }
 }
 
