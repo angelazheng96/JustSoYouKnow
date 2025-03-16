@@ -165,7 +165,7 @@ fun createNotification(context: Context, title: String, message: String) {
 }
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
-    if( !(title == "No Notification" || title.startsWith("JUST RECEIVED A NOTIFICATION") || title.isEmpty())){
+    if( title != "No Notification" && !title.startsWith("JUST RECEIVED A NOTIFICATION") && title.isNotEmpty()){
         createNotification(context, "JUST RECEIVED A NOTIFICATION - $title", "TEXT - $text")
     }
 }
