@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import android.os.Handler
 import android.os.Looper
+import kotlin.random.Random
 
 fun isReceiveNotificationAccessEnabled(context: Context): Boolean {
     // Get the list of enabled notification listener services
@@ -188,7 +189,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        ensureReceiveNotificationAccess(this)
     }
 }
 
@@ -230,8 +230,23 @@ fun createNotification(context: Context, title: String, message: String) {
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
     Log.d("D", "MOST UPDATED VERSION")
+    val wordArray = arrayOf(
+        "you just got a new notification! :)",
+        "your notification bell is working! :D",
+        "THIS IS IMPORTANT !!!!!!!!!                                                  I think...",
+        "something happened :p",
+        "you are so popular and cool and awesome",
+        "you should be productive >:(",
+        "you cant read the notification anymore                                    that kinda sucks for you :(",
+        "apples are actually terrible fruit tbh",
+        "the notification you got does not matter",
+        "you should read faster",
+        "you shouldn't check your phone so often",
+        "you                                                                                          looked haha",
+        "CONGRATULATIONS!!                                              you got a notification! :D"
+        )
     if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty()){
-        createNotification(context, "Just So You Know...", "you just got a new notification! :)")
+        createNotification(context, "Just So You Know...", wordArray[(0..(wordArray.size-1)).random()])
     }
 }
 
