@@ -28,10 +28,10 @@ class MyNotificationListener : NotificationListenerService() {
             putExtra("packageName", packageName)
             putExtra("title", title)
             putExtra("text", text)
-            setPackage(applicationContext.packageName) // ✅ Ensures it's sent within your app
+            setPackage(applicationContext.packageName) // ✅ Ensures it's sent within app
         }
 
-        sendBroadcast(intent) // ✅ Send broadcast to registered receivers in your app
+        sendBroadcast(intent) // ✅ Send broadcast to registered receivers in app
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {

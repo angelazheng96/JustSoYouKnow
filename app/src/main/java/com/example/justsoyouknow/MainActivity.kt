@@ -35,6 +35,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
+import android.os.Handler
+import android.os.Looper
 
 
 fun isNotificationAccessEnabled(context: Context): Boolean {
@@ -87,7 +89,9 @@ class MainActivity : ComponentActivity() {
                     notificationText = text
 
                     //Create Notif
-                    writeCustomNotification(applicationContext, title, text)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        writeCustomNotification(applicationContext, title, text)
+                    }, 1000) // Delay of 2 seconds
                 }
             }
         }
@@ -167,8 +171,8 @@ fun createNotification(context: Context, title: String, message: String) {
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
     Log.d("D", "LAJSHJ")
-    if( title != "No Notification" && !title.startsWith("JUST RECEIVED A NOTIFICATION") && title.isNotEmpty()){
-        createNotification(context, "JUST RECEIVED A NOTIFICATION - $title", "TEXT - $text")
+    if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty()){
+        createNotification(context, "Just So You Know...", "you just got a new notification! :)")
     }
 }
 
