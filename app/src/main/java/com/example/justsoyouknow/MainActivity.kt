@@ -41,22 +41,64 @@ fun isNotificationAccessEnabled(context: Context): Boolean {
 
 
 class MainActivity : ComponentActivity() {
-    private fun ensureNotificationAccess(context: Context) {
-        // Check if the notification access permission is enabled
+    fun ensureRecieveNotificationAccess(context: Context) {
         if (!isNotificationAccessEnabled(context)) {
-            // If not enabled, show a dialog prompting the user to enable it
+            // Show a dialog prompting the user to enable the required setting
             AlertDialog.Builder(context)
                 .setTitle("Enable Notification Access")
-                .setMessage("This app needs notification access to detect notifications. Please enable it in settings.")
+                .setMessage("This app needs notification access to detect notifications.")
                 .setPositiveButton("Open Settings") { _, _ ->
-                    // Open the Notification Listener Settings
-                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                    val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Ensure Settings opens in a new task
+                    context.startActivity(intent)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+    fun ensureSendNotificationAccess(context: Context) {
+        if (!isNotificationEnabled(context)) {
+            // Show a dialog prompting the user to enable the required setting
+            AlertDialog.Builder(context)
+                .setTitle("Enable Notification Access")
+                .setMessage("This app needs permission to send notifications.")
+                .setPositiveButton("Open Settings") { _, _ ->
+                    // Open the App Notifications Settings page
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    context.startActivity(intent)
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
     }
 
+    fun isNotificationEnabled(context: Context): Boolean {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // For Android Oreo and above, check if notifications are enabled for the app
+            notificationManager.areNotificationsEnabled()
+        } else {
+            // For below Android Oreo, assume notifications are allowed
+            true
+        }
+    }
+
+
+
+    @Composable
+    fun sendSetting(context: Context) {
+        Button(onClick = { ensureSendNotificationAccess(this) }) {
+            Text(text = "Enable sending notifications")
+        }
+    }
+    @Composable
+    fun recieveSetting(context: Context) {
+        Button(onClick = { ensureRecieveNotificationAccess(this) }) {
+            Text(text = "Enable receiving notifications")
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -74,11 +116,13 @@ class MainActivity : ComponentActivity() {
                         Greeting(name = "Android")
                         Spacer(modifier = Modifier.height(16.dp))
                         MyButton(applicationContext)
+                        sendSetting(applicationContext)
+                        recieveSetting(applicationContext)
                     }
                 }
             }
         }
-        ensureNotificationAccess(this)
+
     }
 }
 
@@ -136,3 +180,5 @@ fun MyButton(context: Context) {
         Text(text = "Click Me")
     }
 }
+
+
