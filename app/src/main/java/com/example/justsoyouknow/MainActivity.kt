@@ -170,7 +170,7 @@ fun createNotification(context: Context, title: String, message: String) {
 }
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
-    Log.d("D", "LAJSHJ")
+    Log.d("D", "MOST UPDATED VERSION")
     if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty()){
         createNotification(context, "Just So You Know...", "you just got a new notification! :)")
     }
