@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+*.log
+/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/0AKW5PPC5GZpk8OS4eruCNEIOWA=
