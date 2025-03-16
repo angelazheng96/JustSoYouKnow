@@ -1,5 +1,6 @@
 package com.example.justsoyouknow
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,8 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 
 
@@ -41,6 +47,8 @@ fun isNotificationAccessEnabled(context: Context): Boolean {
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var notificationReceiver: BroadcastReceiver
+
     private fun ensureNotificationAccess(context: Context) {
         // Check if the notification access permission is enabled
         if (!isNotificationAccessEnabled(context)) {
@@ -57,9 +65,39 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
+        var notificationTitle by mutableStateOf("No Notification")
+        var notificationText by mutableStateOf("")
+
+        // Register BroadcastReceiver
+        notificationReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == MyNotificationListener.ACTION_NOTIFICATION_RECEIVED) {
+                    val title = intent.getStringExtra("title") ?: "No Title"
+                    val text = intent.getStringExtra("text") ?: "No Text"
+
+                    Log.d("MainActivity", "Received notification: $title - $text")
+
+                    // Update UI
+                    notificationTitle = title
+                    notificationText = text
+
+                    //Create Notif
+                    writeCustomNotification(applicationContext, title, text)
+                }
+            }
+        }
+
+        val intentFilter = IntentFilter("com.example.justsoyouknow.NOTIFICATION_RECEIVED")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(notificationReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(notificationReceiver, intentFilter)
+        }
+
         enableEdgeToEdge()
         setContent {
             JustSoYouKnowTheme {
@@ -99,12 +137,10 @@ fun GreetingPreview() {
 }
 
 fun createNotification(context: Context, title: String, message: String) {
-    Log.d("NotificationTest", "Notif Called!")
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     // For Android 8.0 (API level 26) and above, a notification channel is required.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        Log.d("NotificationTest", "Notif Channel Called!")
         val channelId = "default_channel"
         val channelName = "Default Notifications"
         val channelDescription = "This is the default notification channel."
@@ -124,9 +160,14 @@ fun createNotification(context: Context, title: String, message: String) {
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .build()
 
-    Log.d("NotificationTest", "Notif Sent!")
     // Show the notification
     notificationManager.notify(1, notification) // 1 is the notification ID
+}
+
+fun writeCustomNotification(context: Context, title: String, text: String) {
+    if( !(title == "No Notification" || title.startsWith("JUST RECEIVED A NOTIFICATION") || title.isEmpty())){
+        createNotification(context, "JUST RECEIVED A NOTIFICATION - $title", "TEXT - $text")
+    }
 }
 
 

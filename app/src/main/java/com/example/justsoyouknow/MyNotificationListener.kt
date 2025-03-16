@@ -1,5 +1,6 @@
 package com.example.justsoyouknow
 
+import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -8,6 +9,7 @@ class MyNotificationListener : NotificationListenerService() {
 
     companion object {
         private const val TAG = "NotificationListener"
+        const val ACTION_NOTIFICATION_RECEIVED = "com.example.justsoyouknow.NOTIFICATION_RECEIVED"
     }
     override fun onListenerConnected() {
         super.onListenerConnected()
@@ -23,6 +25,14 @@ class MyNotificationListener : NotificationListenerService() {
         val text = extras.getString("android.text") ?: "No Text"
 
         Log.d(TAG, "Title: $title, Text: $text, Ticker: $tickerText")
+
+        // Send broadcast with notification data
+        val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
+            putExtra("title", title)
+            putExtra("text", text)
+            putExtra("package", packageName)
+        }
+        sendBroadcast(intent)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
