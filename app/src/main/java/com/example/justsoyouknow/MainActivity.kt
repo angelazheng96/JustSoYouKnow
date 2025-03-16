@@ -173,7 +173,7 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
 
 @Composable
 fun MyButton(context: Context) {
-    Button(onClick = { createNotification(context, "Button Pressed", "You just pressed a button!") }) {
+    Button(onClick = { createNotification(context, "JUST RECEIVED A NOTIFICATION", "You just pressed a button!") }) {
         Text(text = "Click Me")
     }
 }
