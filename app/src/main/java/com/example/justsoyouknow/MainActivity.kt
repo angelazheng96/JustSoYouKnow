@@ -47,6 +47,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object GlobalSwitchState {
     var isEnabled by mutableStateOf(true)
@@ -123,6 +126,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
     @Composable
     fun ReceiveSetting(context: Context) {
         var buttonColor by remember { mutableStateOf(Color.Red) }
@@ -177,6 +181,23 @@ class MainActivity : ComponentActivity() {
         var notificationTitle by mutableStateOf("No Notification")
         var notificationText by mutableStateOf("")
 
+        //Random timer
+        val handler = Handler(Looper.getMainLooper())
+        val context: Context = this
+        val runnable = object : Runnable {
+            override fun run() {
+                // Your task here
+                val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
+                createNotification(context, "Just So You Know...", "it's "+ time+" right now!")
+                Log.d("RandomTask", "Task executed at: ${System.currentTimeMillis()}")
+
+                // Schedule the next execution with a random delay
+                val randomDelay = (0..3000).random() // Random delay up to 60 sec
+                handler.postDelayed(this, randomDelay.toLong())
+            }
+        }
+        handler.postDelayed(runnable, (0..3000).random().toLong())
+
         // Register BroadcastReceiver
         notificationReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -228,7 +249,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        ensureReceiveNotificationAccess(this)
     }
 }
 
