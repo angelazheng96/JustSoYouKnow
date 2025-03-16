@@ -38,9 +38,13 @@ import android.os.Handler
 import android.os.Looper
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -121,35 +125,48 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ReceiveSetting(context: Context) {
+        var buttonColor by remember { mutableStateOf(Color.Red) }
+        var buttonMessage by remember { mutableStateOf("Please Enable Receive Notification Access") }
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        LaunchedEffect(lifecycleOwner) {
+            lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    buttonColor = if (isReceiveNotificationAccessEnabled(context)) Color.Gray else Color.Red
+                    buttonMessage = if (isReceiveNotificationAccessEnabled(context)) "Receive Notification Access Enabled" else "Please Enable Receive Notification Access"
+                }
+            })
+        }
+
         Button(
-            onClick = { ensureReceiveNotificationAccess(this) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isReceiveNotificationAccessEnabled(context)) Color.Gray else Color.Red,
-                contentColor = Color.White // Text color
-            )
+            onClick = {ensureReceiveNotificationAccess(this)},
+            colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
         ) {
-            if (isReceiveNotificationAccessEnabled(context)) {
-                Text(text = "Receive Notification Access Enabled")
-            } else {
-                Text(text = "Enable Receive Notification Access")
-            }
+            Text(text = buttonMessage)
         }
     }
 
+
     @Composable
     fun SendSetting(context: Context) {
+        var buttonColor by remember { mutableStateOf(Color.Red) }
+        var buttonMessage by remember { mutableStateOf("Please Enable Send Notification Access") }
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        LaunchedEffect(lifecycleOwner) {
+            lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    buttonColor = if (isSendNotificationAccessEnabled(context)) Color.Gray else Color.Red
+                    buttonMessage = if (isSendNotificationAccessEnabled(context)) "Send Notification Access Enabled" else "Please Enable Send Notification Access"
+                }
+            })
+        }
+
         Button(
-            onClick = { ensureSendNotificationAccess(this) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSendNotificationAccessEnabled(context)) Color.Gray else Color.Red,
-                contentColor = Color.White // Text color
-            )
+            onClick = {ensureSendNotificationAccess(this)},
+            colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
         ) {
-            if (isSendNotificationAccessEnabled(context)) {
-                Text(text = "Send Notification Access Enabled")
-            } else {
-                Text(text = "Enable Send Notification Access")
-            }
+            Text(text = buttonMessage)
         }
     }
 
