@@ -198,7 +198,7 @@ class MainActivity : ComponentActivity() {
                 createNotification(context, "Just So You Know...", "it's "+ time+" right now!", 2, android.R.drawable.ic_lock_idle_alarm)
 
                 // Schedule the next execution with a random delay
-                val randomDelay = (0..18000).random() // Random delay up to 60 sec
+                val randomDelay = (0..180000).random() // Random delay up to 60 sec
                 handler.postDelayed(this, randomDelay.toLong())
             }
         }
