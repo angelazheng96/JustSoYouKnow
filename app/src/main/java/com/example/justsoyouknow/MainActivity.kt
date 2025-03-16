@@ -29,7 +29,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.os.Build
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -189,7 +188,6 @@ class MainActivity : ComponentActivity() {
                 // Your task here
                 val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
                 createNotification(context, "Just So You Know...", "it's "+ time+" right now!")
-                Log.d("RandomTask", "Task executed at: ${System.currentTimeMillis()}")
 
                 // Schedule the next execution with a random delay
                 val randomDelay = (0..18000).random() // Random delay up to 60 sec
@@ -201,12 +199,9 @@ class MainActivity : ComponentActivity() {
         // Register BroadcastReceiver
         notificationReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                Log.d("eohwdkfsl","difhasdhlfj")
                 if (intent?.action == MyNotificationListener.ACTION_NOTIFICATION_RECEIVED) {
                     val title = intent.getStringExtra("title") ?: "No Title"
                     val text = intent.getStringExtra("text") ?: "No Text"
-
-                    Log.d("MainActivity", "Received notification: $title - $text")
 
                     // Update UI
                     notificationTitle = title
@@ -240,7 +235,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Greeting(name = "User")
                         Spacer(modifier = Modifier.height(16.dp))
-                        MyButton(applicationContext)
                         ReceiveSetting(applicationContext)
                         SendSetting(applicationContext)
                         Spacer(modifier = Modifier.height(16.dp))
@@ -289,7 +283,6 @@ fun createNotification(context: Context, title: String, message: String) {
 }
 
 fun writeCustomNotification(context: Context, title: String, text: String) {
-    Log.d("D", "MOST UPDATED VERSION")
     val wordArray = arrayOf(
         "you just got a new notification! :)",
         "your notification bell is working! :D",
@@ -297,7 +290,7 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
         "something happened :p",
         "you are so popular and cool and awesome",
         "you should be productive >:(",
-        "you cant read the notification anymore                                    that kinda sucks for you :(",
+        "you can't read the notification anymore                                    that kinda sucks for you :(",
         "apples are actually terrible fruit tbh",
         "the notification you got does not matter",
         "you should read faster",
@@ -307,14 +300,6 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
     )
     if( title != "No Notification" && !title.startsWith("Just So You Know...") && title.isNotEmpty() && GlobalSwitchState.isEnabled){
         createNotification(context, "Just So You Know...", wordArray[(0..<wordArray.size).random()])    }
-}
-
-
-@Composable
-fun MyButton(context: Context) {
-    Button(onClick = { createNotification(context, "OG notification", "You just pressed a button!") }) {
-        Text(text = "Click Me")
-    }
 }
 
 @Composable
