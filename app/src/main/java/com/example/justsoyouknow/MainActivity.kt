@@ -36,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.material3.Switch
+import androidx.compose.runtime.remember
 
 fun isReceiveNotificationAccessEnabled(context: Context): Boolean {
     // Get the list of enabled notification listener services
@@ -184,6 +186,7 @@ class MainActivity : ComponentActivity() {
                         MyButton(applicationContext)
                         ReceiveSetting(applicationContext)
                         SendSetting(applicationContext)
+                        OffSwitch()
                     }
                 }
             }
@@ -240,5 +243,47 @@ fun writeCustomNotification(context: Context, title: String, text: String) {
 fun MyButton(context: Context) {
     Button(onClick = { createNotification(context, "OG notification", "You just pressed a button!") }) {
         Text(text = "Click Me")
+    }
+}
+
+@Composable
+fun OffSwitch() {
+    var isEnabled by remember { mutableStateOf(false) } // State variable for the switch
+    var switchCounter = 0
+    var denialComments = arrayOf(
+        "are you sure about that?",
+        "hmmm...",
+        "umm... I don't think so.",
+        "that was a misclick, right?",
+        "I know you didn't mean that -u-",
+        "why would you do that?",
+        "whoops - correcter ur mistake :)",
+        "should u really be doing that?",
+        "I don't think you want to do that :]",
+        """Sorry dave, I can't do that.""",
+        "[Sorry, request failed :p]",
+        "hahaha, funny prank!",
+        "no <3",
+        "Request Denied :D"
+    )
+    val denialText = if (switchCounter > 0) denialComments.random() else "Notifications ON"
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = denialText)
+
+        Switch(
+            checked = true, // Always stays ON
+            onCheckedChange = {
+                switchCounter++ // Count failed attempts
+                if (switchCounter >= 7) {
+                    isEnabled = false
+                    switchCounter = 0
+
+                }
+            }
+        )
     }
 }
