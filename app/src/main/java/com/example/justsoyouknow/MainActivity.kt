@@ -45,7 +45,6 @@ fun isNotificationAccessEnabled(context: Context): Boolean {
     return !TextUtils.isEmpty(enabledListeners) && enabledListeners.contains(context.packageName)
 }
 
-
 class MainActivity : ComponentActivity() {
     private lateinit var notificationReceiver: BroadcastReceiver
 
@@ -85,7 +84,6 @@ class MainActivity : ComponentActivity() {
                     notificationTitle = title
                     notificationText = text
 
-                    //Create Notif
                     writeCustomNotification(applicationContext, title, text)
                 }
             }
@@ -119,6 +117,7 @@ class MainActivity : ComponentActivity() {
         ensureNotificationAccess(this)
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
