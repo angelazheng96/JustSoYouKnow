@@ -36,9 +36,11 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -119,7 +121,13 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ReceiveSetting(context: Context) {
-        Button(onClick = { ensureReceiveNotificationAccess(this) }) {
+        Button(
+            onClick = { ensureReceiveNotificationAccess(this) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isReceiveNotificationAccessEnabled(context)) Color.Gray else Color.Red,
+                contentColor = Color.White // Text color
+            )
+        ) {
             if (isReceiveNotificationAccessEnabled(context)) {
                 Text(text = "Receive Notification Access Enabled")
             } else {
@@ -130,12 +138,16 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun SendSetting(context: Context) {
-        Button(onClick = { ensureSendNotificationAccess(this) }) {
+        Button(
+            onClick = { ensureSendNotificationAccess(this) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSendNotificationAccessEnabled(context)) Color.Gray else Color.Red,
+                contentColor = Color.White // Text color
+            )
+        ) {
             if (isSendNotificationAccessEnabled(context)) {
-                Log.d("tagging", "no change button")
                 Text(text = "Send Notification Access Enabled")
             } else {
-                Log.d("tagging", "change button")
                 Text(text = "Enable Send Notification Access")
             }
         }
