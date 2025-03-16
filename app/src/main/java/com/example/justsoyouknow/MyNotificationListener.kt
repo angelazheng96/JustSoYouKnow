@@ -29,4 +29,5 @@ class MyNotificationListener : NotificationListenerService() {
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Log.d(TAG, "Notification removed from: ${sbn.packageName}")
     }
+
 }
